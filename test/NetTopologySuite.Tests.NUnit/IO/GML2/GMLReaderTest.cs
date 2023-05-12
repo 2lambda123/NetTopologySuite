@@ -164,6 +164,20 @@ namespace NetTopologySuite.Tests.NUnit.IO.GML2
             }
         }
 
+        [Test]
+        [Category("GitHub Issue")]
+        public void TestSrsDimension()
+        {
+            string gmlData = "<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml\" srsDimension=\"3\" srsName=\"http://www.opengis.net/gml/srs/epsg.xml#4326\" >" +
+                     "<gml:exterior><gml:LinearRing><gml:posList>244420.388 488213.902 0.0 244407.058 488204.758 0.0 244413.487 488195.387 0.0 244418.813 488199.041 0.0 244415.419 488203.989 0.0 244423.422 488209.478 0.0 244420.388 488213.902 0.0</gml:posList></gml:LinearRing></gml:exterior>" +
+                     "</gml:Polygon>";
+            var reader = new GMLReader();
+            Geometry geom = null;
+            Assert.That( () => geom = reader.Read(gmlData), Throws.Nothing);
+            Assert.That(geom, Is.InstanceOf<Polygon>());
+            Assert.That(((Polygon)geom).ExteriorRing.CoordinateSequence.Dimension, Is.EqualTo(3));
+            Assert.That(geom.Coordinate, Is.InstanceOf<CoordinateZ>());
+        }
 
         private static GeometryCollection DoTest(Type expectedType)
         {
